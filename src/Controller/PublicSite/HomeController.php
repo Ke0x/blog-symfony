@@ -2,6 +2,8 @@
 
 namespace App\Controller\PublicSite;
 
+use App\Entity\Comments;
+use App\Form\CommentsType;
 use App\Entity\Posts;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,8 +35,20 @@ final class HomeController extends AbstractController
             return $this->createNotFoundException();
         }
 
+        $comment = new Comments();
+        $form = $this->createForm(CommentsType::class, $comment);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('comments_index');
+        }
+
         return $this->render('public_site/home/post.html.twig', [
             'post' => $post,
+            'form' => $form->createView(),
+            'comments' => $post->getComments()
         ]);
     }
 

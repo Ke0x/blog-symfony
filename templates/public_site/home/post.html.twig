@@ -17,5 +17,17 @@
 		{% else %}
 			Aucun tag
 		{% endfor %}
+		<hr>
+		{% for comment in comments %}
+			<h1 style="padding: 10px">Commentaires</h1>
+			<p>{{comment.value}}</p>
+			{{ comment.date|date('Y-m-d') }}
+		{% else %}
+			Aucun commentaire
+		{% endfor %}
+		<hr>
+		{% if app.user %}
+			{{ include('posts/_form.html.twig') }}
+		{% endif %}
 	</div>
 {% endblock %}
